@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "mcv-parser"
+version = "0.1.0"
+description = ""
+authors = ["chawinkn <chawin26112549@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.5"
+dacite = "^1.9.2"
+beautifulsoup4 = "^4.13.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
