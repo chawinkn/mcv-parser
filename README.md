@@ -25,7 +25,7 @@ You can run the script interactively or provide credentials via arguments:
 
 ### Run With Argument
 ```bash
-python main.py --u STUDENT_ID --p PASSWORD
+python main.py --username STUDENT_ID --password PASSWORD
 ```
 
 **Options:**
