@@ -1,0 +1,35 @@
+---
+name: dependency-or-config-update
+description: Workflow command scaffold for dependency-or-config-update in mcv-parser.
+allowed_tools: ["Bash", "Read", "Write", "Grep", "Glob"]
+---
+
+# /dependency-or-config-update
+
+Use this workflow when working on **dependency-or-config-update** in `mcv-parser`.
+
+## Goal
+
+Updates project dependencies or configuration, often accompanying feature additions that require new packages.
+
+## Common Files
+
+- `pyproject.toml`
+- `poetry.lock`
+
+## Suggested Sequence
+
+1. Understand the current state and failure mode before editing.
+2. Make the smallest coherent change that satisfies the workflow goal.
+3. Run the most relevant verification for touched files.
+4. Summarize what changed and what still needs review.
+
+## Typical Commit Signals
+
+- Edit pyproject.toml to add or update dependencies.
+- Regenerate poetry.lock to lock dependency versions.
+
+## Notes
+
+- Treat this as a scaffold, not a hard-coded script.
+- Update the command if the workflow evolves materially.
