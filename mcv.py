@@ -171,30 +171,8 @@ class MCVParser:
 
     def dump_materials(self) -> None:
         with console.status("[bold yellow]🔍 Fetching available semesters and courses...[/bold yellow]"):
-            all_yearsem = self.get_all_yearsem()
-            if not all_yearsem:
-                console.print("[bold red]⚠️  No semesters found![/bold red]")
-                return
-
-            # Filter yearsem that actually have courses
-            valid_courses_map: dict[str, list[CourseDTO]] = {}
-            for yearsem in all_yearsem:
-                r = self.session.post(
-                    self.url + "/?q=courseville/ajax/cvhomepanel_get_filter",
-                    data={
-                        "yearsem": yearsem,
-                        "role": "all",
-                        "type": "course"
-                    },
-                    cookies=self.cookies
-                )
-                try:
-                    payload = json.loads(r.text)
-                    res = from_dict(CourseResDTO, payload)
-                    if res.data: # Only add if there are courses
-                        valid_courses_map[yearsem] = res.data
-                except json.JSONDecodeError:
-                    continue
+            all_courses = self.get_courses()
+            valid_courses_map = {ys: courses for ys, courses in all_courses.items() if courses}
 
         if not valid_courses_map:
             console.print("[bold red]⚠️  No courses found in any semester![/bold red]")
