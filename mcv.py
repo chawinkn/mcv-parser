@@ -57,7 +57,7 @@ class MCVParser:
 		)
 
 		return "Log out" in r.text
-	
+
 	def get_all_yearsem(self) -> list[str]:
 		r = self.session.get(
 			self.url + "/?type=course&role=all",
@@ -66,10 +66,12 @@ class MCVParser:
 
 		soup = BeautifulSoup(r.text, "html.parser")
 		select = soup.find("select", {"id": "all-yearsem-select"})
+		if not select:
+			return []
 		all_yearsem = [option["value"] for option in select.find_all("option")] # type: ignore
 
 		return all_yearsem
-	
+
 	def get_courses(self) -> dict[str, list[CourseDTO]]:
 		all_yearsem = self.get_all_yearsem()
 		courses: dict[str, list[CourseDTO]] = {}
@@ -85,12 +87,15 @@ class MCVParser:
 				cookies=self.cookies
 			)
 
-			payload = json.loads(r.text)
-			res = from_dict(CourseResDTO, payload)
-			courses[yearsem] = res.data
+			try:
+				payload = json.loads(r.text)
+				res = from_dict(CourseResDTO, payload)
+				courses[yearsem] = res.data
+			except json.JSONDecodeError:
+				continue
 
 		return courses
-	
+
 	def get_material(self, course_id: str) -> list[MaterialDTO]:
 		r = self.session.get(
 			self.url + "/?q=courseville/course/" + course_id,
@@ -101,13 +106,29 @@ class MCVParser:
 		soup = BeautifulSoup(r.text, "html.parser")
 		materials_div = soup.find("div", {"class": "cvui-color-set-1-wrapper"})
 
+		if not materials_div:
+			print(f"      ! Warning: Could not find materials container for course {course_id}. The page structure might have changed or the course has no materials.")
+			return []
+
 		files_tr = materials_div.find_all("tr") # type: ignore
-		
+
 		# TODO: implement dfs from root for better perfomance ?
 		for tr in files_tr:
-			title = tr.find("td", {"data-col": "title"}).find("a").get_text().strip()
-			link = tr.find("td", {"data-col": "action"}).find("a").get("href")
-			
+			title_td = tr.find("td", {"data-col": "title"})
+			action_td = tr.find("td", {"data-col": "action"})
+
+			if not title_td or not action_td:
+				continue
+
+			title_a = title_td.find("a")
+			link_a = action_td.find("a")
+
+			if not title_a or not link_a:
+				continue
+
+			title = title_a.get_text().strip()
+			link = link_a.get("href")
+
 			path_lst = []
 			# traverse back from leaf (file) to root
 			for p in tr.parents:
@@ -123,7 +144,10 @@ class MCVParser:
 
 				# hit parent folder
 				if classname == "cv-course-home-folder-container cvui-colored-bg cvui-striped":
-					folder_title = p.find("div", {"data-part": "title"}).get_text().strip()
+					folder_title_div = p.find("div", {"data-part": "title"})
+					if not folder_title_div:
+						continue
+					folder_title = folder_title_div.get_text().strip()
 					folder_name = re.sub(r'[^a-zA-Z0-9_-]', '', folder_title.replace(" ", "-")).lower()
 
 					path_lst.append(folder_name)
@@ -133,11 +157,11 @@ class MCVParser:
 			materials.append(MaterialDTO(path, title, link))
 
 		return materials
-	
+
 	# TODO: refactor
 	def dump_materials(self) -> None:
 		courses = self.get_courses()
-		
+
 		for yearsem in courses:
 			print(f"Year/semester: {yearsem}")
 
@@ -147,13 +171,15 @@ class MCVParser:
 				materials = self.get_material(course.cv_cid)
 				clear_set: set[str] = set()
 
+				course_folder = f"{ROOT}/Courses/{yearsem.replace('/', '-')}/{course.course_no.replace('.', '-')}"
+				os.makedirs(course_folder, exist_ok=True)
 
 				for material in materials:
 					o = urllib.parse.urlparse(material.link)
 					filename = o.path.rstrip("/").split("/")[-1]
 					ext = filename.split(".")[-1] if "." in filename else ""
 
-					folder_path = f"{ROOT}/Courses/{yearsem.replace("/", "-")}/{course.course_no.replace('.', '-')}{material.path}"
+					folder_path = f"{course_folder}{material.path}"
 
 					os.makedirs(folder_path, exist_ok=True)
 
@@ -169,16 +195,17 @@ class MCVParser:
 								f.write(f"{material.title} - {material.link}\n")
 						else:
 							path = os.path.join(folder_path, filename)
-							url = o._replace(path=urllib.parse.quote(o.path)).geturl()
-							file = urllib.request.urlopen(url)
+							r = self.session.get(material.link, cookies=self.cookies, stream=True)
+							r.raise_for_status()
 
 							with open(path, "wb") as f:
-								f.write(file.read())
+								for chunk in r.iter_content(chunk_size=8192):
+									f.write(chunk)
 					except Exception as e:
 						print(f"{material.title}: {e}")
 
 				# Course materials
-				folder_path = f"{ROOT}/Courses/{yearsem.replace("/", "-")}/{course.course_no.replace('.', '-')}/materials.json"
+				folder_path = os.path.join(course_folder, "materials.json")
 				with open(folder_path, "w") as f:
 					materials_lst = [] # type: ignore
 					for i in materials:
@@ -187,12 +214,12 @@ class MCVParser:
 						filename = o.path.rstrip("/").split("/")[-1]
 						d["filename"] = filename
 						materials_lst.append(d)
-					
+
 					f.write(json.dumps(materials_lst, indent=4, ensure_ascii=False))
 
 				# Course metadata
-				folder_path = f"{ROOT}/Courses/{yearsem.replace("/", "-")}/{course.course_no.replace('.', '-')}/metadata.json"
+				folder_path = os.path.join(course_folder, "metadata.json")
 				with open(folder_path, "w") as f:
 					f.write(json.dumps(asdict(course), indent=4, ensure_ascii=False))
-			
+
 			print()
