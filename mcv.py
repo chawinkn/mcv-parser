@@ -4,6 +4,7 @@ import json
 import os
 import urllib
 import datetime
+import questionary
 from dacite import from_dict
 from DTO.course import CourseResDTO, CourseDTO
 from DTO.material import MaterialDTO
@@ -157,13 +158,51 @@ class MCVParser:
         return materials
 
     def dump_materials(self) -> None:
-        scrape_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        with console.status("[bold yellow]🔍 Searching for your courses...[/bold yellow]"):
-            courses = self.get_courses()
+        with console.status("[bold yellow]🔍 Fetching available semesters and courses...[/bold yellow]"):
+            all_yearsem = self.get_all_yearsem()
+            if not all_yearsem:
+                console.print("[bold red]⚠️  No semesters found![/bold red]")
+                return
 
-        if not courses:
-            console.print("[bold red]⚠️  No courses found![/bold red]")
+            # Filter yearsem that actually have courses
+            valid_courses_map: dict[str, list[CourseDTO]] = {}
+            for yearsem in all_yearsem:
+                r = self.session.post(
+                    self.url + "/?q=courseville/ajax/cvhomepanel_get_filter",
+                    data={
+                        "yearsem": yearsem,
+                        "role": "all",
+                        "type": "course"
+                    },
+                    cookies=self.cookies
+                )
+                try:
+                    payload = json.loads(r.text)
+                    res = from_dict(CourseResDTO, payload)
+                    if res.data: # Only add if there are courses
+                        valid_courses_map[yearsem] = res.data
+                except json.JSONDecodeError:
+                    continue
+
+        if not valid_courses_map:
+            console.print("[bold red]⚠️  No courses found in any semester![/bold red]")
             return
+
+        available_semesters = list(valid_courses_map.keys())
+        selected_yearsem = questionary.checkbox(
+            "Select semesters to download",
+            choices=available_semesters,
+            instruction="(Space to select, a to select all, Enter to confirm)"
+        ).ask()
+
+        if not selected_yearsem:
+            console.print("[bold yellow]ℹ️  No semesters selected. Exiting.[/bold yellow]")
+            return
+
+        scrape_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Filter the map based on user selection
+        courses = {ys: valid_courses_map[ys] for ys in selected_yearsem}
 
         console.print(f"\n[bold magenta]🚀 Starting material download (Session: {scrape_time})...[/bold magenta]\n")
 

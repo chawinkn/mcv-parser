@@ -1,8 +1,7 @@
 import argparse
-import getpass
+import questionary
 from mcv import MCVParser
 from rich.console import Console
-from rich.prompt import Prompt
 
 console = Console()
 
@@ -14,12 +13,15 @@ if __name__ == "__main__":
 
     username = args.username
     if not username:
-        username = Prompt.ask("[bold white]👤 Student ID (10 digits)[/bold white]")
+        username = questionary.text("Student ID (10 digits)").ask()
 
     password = args.password
     if not password:
-        console.print("[bold white]🔑 Password:[/bold white] ", end="")
-        password = getpass.getpass("")
+        password = questionary.password("Password").ask()
+
+    if not username or not password:
+        console.print("[bold red]❌ Username and password are required.[/bold red]")
+        exit(1)
 
     mcvp = MCVParser(username, password)
 
