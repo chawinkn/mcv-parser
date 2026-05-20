@@ -25,7 +25,7 @@ You can run the script interactively or provide credentials via arguments:
 
 ### Run With Argument
 ```bash
-python main.py --username YOUR_STUDENT_ID --password YOUR_PASSWORD
+python main.py --u STUDENT_ID --p PASSWORD
 ```
 
 **Options:**
@@ -35,4 +35,21 @@ python main.py --username YOUR_STUDENT_ID --password YOUR_PASSWORD
 ### Run Manually
 ```bash
 python main.py
+```
+
+## Dumped Folder
+
+Downloaded materials are stored into a `Courses_YYYYMMDD_HHMMSS` directory to prevent overwriting previous downloads:
+
+### Example
+
+```text
+Courses_YYYYMMDD_HHMMSS/
+├── Year-Semester/
+│   ├── Course-ID/
+│   │   ├── materials.json (Metadata for all materials)
+│   │   ├── metadata.json  (Course information)
+│   │   ├── lecture-slides/
+│   │   │   └── slide.pdf
+│   │   └── link.txt (Contains saved URLs for external links)
 ```
