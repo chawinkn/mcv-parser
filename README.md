@@ -31,6 +31,7 @@ python main.py --u STUDENT_ID --p PASSWORD
 **Options:**
 - `-u`, `-s`, `--username`, `--student-id`: Your 10-digit Student ID.
 - `-p`, `--password`: Your MyCourseVille password.
+- `-d`, `--delay`: Crawl delay in seconds (default: 10.0). Set to a lower value (e.g., 1.0) for faster downloads at your own risk.
 
 ### Run Manually
 ```bash

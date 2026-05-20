@@ -4,6 +4,7 @@ import json
 import os
 import urllib
 import datetime
+import time
 import questionary
 from dacite import from_dict
 from DTO.course import CourseResDTO, CourseDTO
@@ -16,7 +17,7 @@ ROOT = os.getcwd()
 console = Console()
 
 class MCVParser:
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str, delay: float = 10.0):
         self.username = username
         self.password = password
 
@@ -24,6 +25,17 @@ class MCVParser:
         self.session = requests.Session()
         self.token = ""
         self.cookies: dict[str, str] = {"has_js": "1"}
+        self.last_request_time = 0.0
+        self.crawl_delay = max(0.0, delay)
+
+    def _throttle(self) -> None:
+        """Ensures at least crawl_delay seconds have passed since the last request."""
+        now = time.time()
+        elapsed = now - self.last_request_time
+        if elapsed < self.crawl_delay:
+            wait_time = self.crawl_delay - elapsed
+            time.sleep(wait_time)
+        self.last_request_time = time.time()
 
     def get_client(self) -> None:
         """
@@ -244,6 +256,8 @@ class MCVParser:
                             path = os.path.join(folder_path, filename)
                             # Using status here just for the individual file download so it's snappy
                             with console.status(f"    [italic white]Downloading {filename}...[/italic white]"):
+                                # Only throttle on file downloads
+                                self._throttle()
                                 r = self.session.get(material.link, cookies=self.cookies, stream=True)
                                 r.raise_for_status()
                                 with open(path, "wb") as f:

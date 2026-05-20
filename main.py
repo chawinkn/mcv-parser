@@ -9,7 +9,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MCV Parser - Download course materials easily")
     parser.add_argument("-u", "-s", "--username", "--student-id", help="Your 10-digit Student ID", dest="username")
     parser.add_argument("-p", "--password", help="Your MyCourseVille password")
+    parser.add_argument("-d", "--delay", help="Crawl delay in seconds (default: 10.0)", type=float, default=10.0)
     args = parser.parse_args()
+
+    if args.delay < 0:
+        console.print("[bold red]❌ Delay must be a non-negative value.[/bold red]")
+        exit(1)
 
     username = args.username
     if not username:
@@ -23,7 +28,7 @@ if __name__ == "__main__":
         console.print("[bold red]❌ Username and password are required.[/bold red]")
         exit(1)
 
-    mcvp = MCVParser(username, password)
+    mcvp = MCVParser(username, password, delay=args.delay)
 
     with console.status("[bold yellow]🔐 Logging in...[/bold yellow]") as status:
         login_success = mcvp.login()
