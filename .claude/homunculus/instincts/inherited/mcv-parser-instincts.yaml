@@ -1,0 +1,473 @@
+# Instincts generated from https://github.com/chawinkn/mcv-parser
+# Generated: 2026-05-20T19:10:26.527Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: mcv-parser-commit-conventional
+trigger: "when writing a commit message"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes: feat, fix, docs
+
+## Evidence
+
+- 8 commits analyzed
+- Detected conventional commit pattern
+- Examples: fix: error handling (no materials), feat: add argparse login
+
+---
+id: mcv-parser-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Commit Length
+
+## Action
+
+Keep commit messages concise (~28 characters)
+
+## Evidence
+
+- Average commit message length: 28 chars
+- Based on 8 commits
+
+---
+id: mcv-parser-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: mcv-parser-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: mcv-parser-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: mcv-parser-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: mcv-parser-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~26x per month
+- Files: 
+
+---
+id: mcv-parser-workflow-feature-implementation-main-mcv
+trigger: "when doing feature implementation main mcv"
+confidence: 0.65
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Workflow Feature Implementation Main Mcv
+
+## Action
+
+Follow the feature-implementation-main-mcv workflow:
+1. Edit main.py to add or update CLI/entry logic.
+2. Edit mcv.py to implement or adjust core functionality.
+3. Optionally update dependencies or supporting files (e.g., pyproject.toml, poetry.lock, .gitignore).
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~3x per month
+- Files: main.py, mcv.py
+
+---
+id: mcv-parser-workflow-dependency-or-config-update
+trigger: "when doing dependency or config update"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Workflow Dependency Or Config Update
+
+## Action
+
+Follow the dependency-or-config-update workflow:
+1. Edit pyproject.toml to add or update dependencies.
+2. Regenerate poetry.lock to lock dependency versions.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: pyproject.toml, poetry.lock
+
+---
+id: mcv-parser-workflow-readme-update
+trigger: "when doing readme update"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/chawinkn/mcv-parser
+---
+
+# Mcv Parser Workflow Readme Update
+
+## Action
+
+Follow the readme-update workflow:
+1. Edit README.md to add or update documentation.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: README.md
+
+---
+id: mcv-parser-instinct-file-naming
+trigger: "When creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct File Naming
+
+## Action
+
+Name the file using camelCase (e.g., myModule.py)
+
+## Evidence
+
+- Pattern in namingConventions.files: camelCase
+
+---
+id: mcv-parser-instinct-function-naming
+trigger: "When defining a new function"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Function Naming
+
+## Action
+
+Name the function using camelCase (e.g., processInput)
+
+## Evidence
+
+- Pattern in namingConventions.functions: camelCase
+
+---
+id: mcv-parser-instinct-class-naming
+trigger: "When defining a new class"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Class Naming
+
+## Action
+
+Name the class using PascalCase (e.g., CourseParser)
+
+## Evidence
+
+- Pattern in namingConventions.classes: PascalCase
+
+---
+id: mcv-parser-instinct-constant-naming
+trigger: "When defining a constant"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Constant Naming
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE (e.g., DEFAULT_TIMEOUT)
+
+## Evidence
+
+- Pattern in namingConventions.constants: SCREAMING_SNAKE_CASE
+
+---
+id: mcv-parser-instinct-import-style
+trigger: "When importing modules"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Import Style
+
+## Action
+
+Use relative imports within the package
+
+## Evidence
+
+- Pattern in importStyle: relative
+
+---
+id: mcv-parser-instinct-export-style
+trigger: "When exporting functions or classes"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Export Style
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in exportStyle: named
+
+---
+id: mcv-parser-instinct-test-location
+trigger: "When adding tests for new features"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Test Location
+
+## Action
+
+Place test files in a separate test directory, not alongside source files
+
+## Evidence
+
+- architecture.folderStructure.testLocation: separate
+
+---
+id: mcv-parser-instinct-test-feature-sequence
+trigger: "When implementing a new feature"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Test Feature Sequence
+
+## Action
+
+After feature implementation, add corresponding tests before updating documentation
+
+## Evidence
+
+- feature-development.commitSequence: Add feature implementation → Add tests for feature → Update documentation
+
+---
+id: mcv-parser-instinct-git-commit-format
+trigger: "When making a commit"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Git Commit Format
+
+## Action
+
+Format the commit message as <type>: <short description> using allowed prefixes (feat, fix, docs)
+
+## Evidence
+
+- commits.type: conventional
+- commits.prefixes: [feat, fix, docs]
+- Examples: 'fix: error handling (no materials)', 'feat: add argparse login'
+
+---
+id: mcv-parser-instinct-git-commit-length
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Git Commit Length
+
+## Action
+
+Keep the commit message concise, around 28 characters on average
+
+## Evidence
+
+- commits.averageLength: 28
+
+---
+id: mcv-parser-instinct-workflow-feature-main-mcv
+trigger: "When adding or enhancing a core feature that involves both main.py and mcv.py"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Workflow Feature Main Mcv
+
+## Action
+
+Edit main.py for CLI/entry logic, edit mcv.py for core logic, and optionally update dependencies or supporting files
+
+## Evidence
+
+- workflow: feature-implementation-main-mcv
+- Files involved: main.py, mcv.py
+- Example commit sequence
+
+---
+id: mcv-parser-instinct-workflow-dependency-update
+trigger: "When a feature addition requires new dependencies or configuration changes"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Workflow Dependency Update
+
+## Action
+
+Edit pyproject.toml to update dependencies and regenerate poetry.lock
+
+## Evidence
+
+- workflow: dependency-or-config-update
+- Files involved: pyproject.toml, poetry.lock
+
+---
+id: mcv-parser-instinct-workflow-readme-update
+trigger: "When a new feature is added or documentation needs clarification"
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: chawinkn/mcv-parser
+---
+
+# Mcv Parser Instinct Workflow Readme Update
+
+## Action
+
+Edit README.md to add or update documentation
+
+## Evidence
+
+- workflow: readme-update
+- Files involved: README.md
+
