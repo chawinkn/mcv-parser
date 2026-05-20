@@ -2,6 +2,7 @@ import argparse
 import questionary
 from mcv import MCVParser
 from rich.console import Console
+import sys
 
 console = Console()
 
@@ -14,7 +15,7 @@ if __name__ == "__main__":
 
     if args.delay < 0:
         console.print("[bold red]❌ Delay must be a non-negative value.[/bold red]")
-        exit(1)
+        sys.exit(1)
 
     username = args.username
     if not username:
@@ -26,7 +27,7 @@ if __name__ == "__main__":
 
     if not username or not password:
         console.print("[bold red]❌ Username and password are required.[/bold red]")
-        exit(1)
+        sys.exit(1)
 
     mcvp = MCVParser(username, password, delay=args.delay)
 
@@ -37,7 +38,7 @@ if __name__ == "__main__":
         else:
             status.stop()
             console.print("[bold red]❌ Incorrect username or password. Please try again.[/bold red]")
-            exit(1)
+            sys.exit(1)
 
     console.print("[bold green]✅ Login Successful![/bold green]")
     mcvp.dump_materials()
