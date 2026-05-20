@@ -18,7 +18,6 @@ if __name__ == "__main__":
 
     password = args.password
     if not password:
-        # getpass is still the safest for hidden input, but we can style the prompt label
         console.print("[bold white]🔑 Password:[/bold white] ", end="")
         password = getpass.getpass("")
 
@@ -33,6 +32,5 @@ if __name__ == "__main__":
             console.print("[bold red]❌ Incorrect username or password. Please try again.[/bold red]")
             exit(1)
 
-    # Print success and start dumping outside the status block to avoid flickering
     console.print("[bold green]✅ Login Successful![/bold green]")
     mcvp.dump_materials()

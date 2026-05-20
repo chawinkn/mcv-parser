@@ -3,6 +3,7 @@ import re
 import json
 import os
 import urllib
+import datetime
 from dacite import from_dict
 from DTO.course import CourseResDTO, CourseDTO
 from DTO.material import MaterialDTO
@@ -156,6 +157,7 @@ class MCVParser:
         return materials
 
     def dump_materials(self) -> None:
+        scrape_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         with console.status("[bold yellow]🔍 Searching for your courses...[/bold yellow]"):
             courses = self.get_courses()
 
@@ -163,7 +165,7 @@ class MCVParser:
             console.print("[bold red]⚠️  No courses found![/bold red]")
             return
 
-        console.print("\n[bold magenta]🚀 Starting material download...[/bold magenta]\n")
+        console.print(f"\n[bold magenta]🚀 Starting material download (Session: {scrape_time})...[/bold magenta]\n")
 
         for yearsem in courses:
             console.print(f"[bold cyan]📅 {yearsem}[/bold cyan]")
@@ -178,7 +180,7 @@ class MCVParser:
                     console.print("    [yellow]⚠️  No materials found for this course.[/yellow]")
                     continue
 
-                course_folder = f"{ROOT}/Courses/{yearsem.replace('/', '-')}/{course.course_no.replace('.', '-')}"
+                course_folder = f"{ROOT}/Courses_{scrape_time}/{yearsem.replace('/', '-')}/{course.course_no.replace('.', '-')}"
                 os.makedirs(course_folder, exist_ok=True)
 
                 clear_set: set[str] = set()
