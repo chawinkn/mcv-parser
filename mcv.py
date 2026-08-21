@@ -194,6 +194,25 @@ class MCVParser:
         # Filter the map based on user selection
         courses = {ys: valid_courses_map[ys] for ys in selected_yearsem}
 
+        for ys in selected_yearsem:
+            course_choices = [f"{c.course_no} {c.title}" for c in courses[ys]]
+            selected_course_strings = questionary.checkbox(
+                f"Select courses to download for {ys}",
+                choices=course_choices,
+                instruction="(Space to select, a to select all, Enter to confirm)"
+            ).ask()
+
+            if not selected_course_strings:
+                courses[ys] = []
+            else:
+                courses[ys] = [c for c in courses[ys] if f"{c.course_no} {c.title}" in selected_course_strings]
+
+        courses = {ys: cs for ys, cs in courses.items() if cs}
+
+        if not courses:
+            console.print("[bold yellow]ℹ️  No courses selected. Exiting.[/bold yellow]")
+            return
+
         console.print(f"\n[bold magenta]🚀 Starting material download (Session: {scrape_time})...[/bold magenta]\n")
 
         for yearsem in courses:
